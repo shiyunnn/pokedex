@@ -1,15 +1,21 @@
 import React, { useEffect, useState, type SyntheticEvent } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import PokemonCard from '../components/PokemonCard';
+import { useAuth } from '../context/AuthContext';
 import { useVotes } from '../context/VoteContext';
 import { getPokemonFallbackSpriteUrl, getPokemonSpriteUrl } from '../lib/pokemonSprites';
 import type { Pokemon } from '../types';
 
 function PokedexPage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [voteError, setVoteError] = useState('');
+  const { isAuthenticated, currentUser } = useAuth();
   const { upvote } = useVotes();
 
   useEffect(() => {
@@ -58,7 +64,6 @@ function PokedexPage() {
 
   const search = query.trim().toLowerCase();
   const filtered = search ? pokemon.filter((item) => item.name.includes(search)) : pokemon;
-  console.log(filtered);
 
   const handleSpriteError = (e: SyntheticEvent<HTMLImageElement>, fallback: string) => {
     const img = e.currentTarget;
@@ -71,9 +76,35 @@ function PokedexPage() {
     img.src = fallback;
   };
 
+  const handleUpvote = async (item: Pokemon) => {
+    if (!isAuthenticated) {
+      navigate('/login', {
+        state: {
+          from: '/pokedex',
+          message: 'Login first so your vote can be recorded.',
+        },
+      });
+      return;
+    }
+
+    const result = await upvote(item);
+    if (result.error) {
+      setVoteError(result.error);
+      return;
+    }
+
+    setVoteError('');
+  };
+
   return (
     <section className="pokedex nes-container">
       <h1>Pokedex</h1>
+      <p className="vote-hint">
+        {isAuthenticated
+          ? `Voting as ${currentUser?.name || currentUser?.username}.`
+          : 'Login is required before you can vote.'}
+      </p>
+      {!!voteError && <p className="error-text">{voteError}</p>}
       <div className="search-bar">
         <input
           id="pokemon-search"
@@ -92,7 +123,14 @@ function PokedexPage() {
           <p className="result-count">{filtered.length} result(s)</p>
           <div className="pokemon-grid">
             {filtered.map((item) => (
-              <PokemonCard key={item.id} item={item} onUpvote={upvote} onSpriteError={handleSpriteError} />
+              <PokemonCard
+                key={item.id}
+                item={item}
+                query={search}
+                onUpvote={handleUpvote}
+                onSpriteError={handleSpriteError}
+                voteButtonLabel={isAuthenticated ? `Upvote ${item.name}` : `Login to vote for ${item.name}`}
+              />
             ))}
           </div>
         </>

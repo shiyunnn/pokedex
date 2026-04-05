@@ -6,7 +6,7 @@ import { useVotes } from '../context/VoteContext';
 
 function LeaderboardPage() {
   const navigate = useNavigate();
-  const { votes } = useVotes();
+  const { votes, isLoading, error } = useVotes();
 
   const ranked = useMemo(() => {
     return [...votes].sort((a, b) => {
@@ -25,8 +25,10 @@ function LeaderboardPage() {
   return (
     <section className="leaderboard nes-container">
       <h1>Leaderboard</h1>
-      {!ranked.length && <p>No votes yet. Vote on Pokemon in the Pokedex tab first.</p>}
-      {!!ranked.length && (
+      {isLoading && <p>Loading leaderboard...</p>}
+      {!!error && <p className="error-text">{error}</p>}
+      {!isLoading && !error && !ranked.length && <p>No votes yet. Vote on Pokemon in the Pokedex tab first.</p>}
+      {!isLoading && !error && !!ranked.length && (
         <div className="leaderboard-list">
           {ranked.map((entry, idx) => (
             <article

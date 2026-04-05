@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, SyntheticEvent } from 'react';
 
+import Highlighter from 'react-highlight-words';
 import { useNavigate } from 'react-router-dom';
 
 import { getPokemonShowdownSpriteUrl } from '../lib/pokemonSprites';
@@ -8,11 +9,13 @@ import type { Pokemon } from '../types';
 
 type PokemonCardProps = {
   item: Pokemon;
-  onUpvote: (item: Pokemon) => void;
+  query: string;
+  onUpvote: (item: Pokemon) => void | Promise<void>;
   onSpriteError: (e: SyntheticEvent<HTMLImageElement>, fallbackSprite: string) => void;
+  voteButtonLabel?: string;
 };
 
-function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
+function PokemonCard({ item, query, onUpvote, onSpriteError, voteButtonLabel }: PokemonCardProps) {
   const navigate = useNavigate();
   const [isSpinning, setIsSpinning] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -139,7 +142,15 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
         )}
       </div>
       <h2>#{item.id}</h2>
-      <p>{item.name}</p>
+      <p>
+        <Highlighter
+          autoEscape
+          caseSensitive={false}
+          highlightClassName="pokemon-name-highlight"
+          searchWords={query ? [query] : []}
+          textToHighlight={item.name}
+        />
+      </p>
       <div className="card-actions">
         <button
           className="nes-btn is-error card-action-btn"
@@ -148,7 +159,8 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
             e.stopPropagation();
             onUpvote(item);
           }}
-          aria-label={`Upvote ${item.name}`}
+          aria-label={voteButtonLabel || `Upvote ${item.name}`}
+          title={voteButtonLabel || `Upvote ${item.name}`}
         >
           <span className="pixel-heart" aria-hidden="true" />
         </button>
