@@ -3,6 +3,7 @@ import type { KeyboardEvent, SyntheticEvent } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
+import { getPokemonShowdownSpriteUrl } from '../lib/pokemonSprites';
 import type { Pokemon } from '../types';
 
 type PokemonCardProps = {
@@ -20,8 +21,8 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
   const [showdownFailed, setShowdownFailed] = useState(false);
   const cardRef = useRef<HTMLElement | null>(null);
   const spinFrameRef = useRef<number | null>(null);
-  const showdownSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${item.id}.gif`;
-  const currentSprite = isHovered && showdownReady && !showdownFailed ? showdownSprite : item.sprite;
+  const showdownSprite = getPokemonShowdownSpriteUrl(item.id);
+  const showAnimatedSprite = isHovered && showdownReady && !showdownFailed;
 
   useEffect(() => {
     return () => {
@@ -56,7 +57,7 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
           observer.disconnect();
         }
       },
-      { rootMargin: '160px' },
+      { rootMargin: '160px' }
     );
 
     observer.observe(node);
@@ -65,31 +66,6 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
       observer.disconnect();
     };
   }, [shouldPreloadShowdown, showdownFailed]);
-
-  useEffect(() => {
-    if (!shouldPreloadShowdown || showdownReady || showdownFailed) {
-      return;
-    }
-
-    let active = true;
-    const img = new Image();
-    img.decoding = 'async';
-    img.onload = () => {
-      if (active) {
-        setShowdownReady(true);
-      }
-    };
-    img.onerror = () => {
-      if (active) {
-        setShowdownFailed(true);
-      }
-    };
-    img.src = showdownSprite;
-
-    return () => {
-      active = false;
-    };
-  }, [shouldPreloadShowdown, showdownFailed, showdownReady, showdownSprite]);
 
   const handleSpin = () => {
     if (spinFrameRef.current !== null) {
@@ -118,19 +94,11 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
     }
   };
 
-  const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
-    if (currentSprite === showdownSprite) {
-      setShowdownFailed(true);
-      return;
-    }
-
-    onSpriteError(e, item.fallbackSprite);
-  };
-
   return (
     <article
       ref={cardRef}
       className="pokemon-card nes-container is-rounded"
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
       role="link"
       tabIndex={0}
       onClick={handleOpenDetail}
@@ -144,17 +112,31 @@ function PokemonCard({ item, onUpvote, onSpriteError }: PokemonCardProps) {
       aria-label={`Open details for ${item.name}`}
     >
       <div
-        className={`pokemon-sprite-shell${isSpinning ? ' is-spinning' : ''}`}
+        className={`pokemon-sprite-shell${isSpinning ? ' is-spinning' : ''}${showAnimatedSprite ? ' is-animated' : ''}`}
         onAnimationEnd={() => setIsSpinning(false)}
       >
         <img
-          src={currentSprite}
+          className="pokemon-sprite pokemon-sprite-base"
+          src={item.sprite}
           alt={item.name}
           width={120}
           height={120}
           loading="lazy"
-          onError={handleImageError}
+          onError={(e) => onSpriteError(e, item.fallbackSprite)}
         />
+        {shouldPreloadShowdown && !showdownFailed && (
+          <img
+            className="pokemon-sprite pokemon-sprite-animated"
+            src={showdownSprite}
+            alt=""
+            aria-hidden="true"
+            width={120}
+            height={120}
+            loading="eager"
+            onLoad={() => setShowdownReady(true)}
+            onError={() => setShowdownFailed(true)}
+          />
+        )}
       </div>
       <h2>#{item.id}</h2>
       <p>{item.name}</p>

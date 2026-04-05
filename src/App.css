@@ -315,13 +315,35 @@
 .pokemon-sprite-shell {
   width: 120px;
   height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
 }
 
-.pokemon-sprite-shell img {
+.pokemon-sprite {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   image-rendering: pixelated;
+  transition: opacity 140ms ease-out;
+}
+
+.pokemon-sprite-base {
+  opacity: 1;
+}
+
+.pokemon-sprite-animated {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pokemon-sprite-shell.is-animated .pokemon-sprite-base {
+  opacity: 0;
+}
+
+.pokemon-sprite-shell.is-animated .pokemon-sprite-animated {
+  opacity: 1;
 }
 
 .pokemon-sprite-shell.is-spinning {
@@ -731,7 +753,7 @@
 
 .leaderboard-rank,
 .leaderboard-score {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--retro-ink-soft);
 }
 

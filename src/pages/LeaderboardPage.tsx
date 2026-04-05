@@ -23,29 +23,27 @@ function LeaderboardPage() {
   };
 
   return (
-    <section className='leaderboard nes-container'>
+    <section className="leaderboard nes-container">
       <h1>Leaderboard</h1>
       {!ranked.length && <p>No votes yet. Vote on Pokemon in the Pokedex tab first.</p>}
       {!!ranked.length && (
-        <div className='leaderboard-list'>
+        <div className="leaderboard-list">
           {ranked.map((entry, idx) => (
             <article
               key={entry.id}
-              className='leaderboard-item nes-container is-rounded'
-              role='link'
+              className="leaderboard-item nes-container is-rounded"
+              role="link"
               tabIndex={0}
               onClick={() => navigate(`/pokedex/${entry.id}`)}
               onKeyDown={(e) => handleItemKeyDown(e, entry.id)}
               aria-label={`Open details for ${entry.name}`}
             >
-              <div className='leaderboard-rank'>#{idx + 1}</div>
-              <img src={entry.sprite} alt={entry.name} width={56} height={56} loading='lazy' />
-              <div className='leaderboard-meta'>
-                <h2>
-                  #{entry.id} {entry.name}
-                </h2>
+              <div className="leaderboard-rank">#{idx + 1}</div>
+              <img src={entry.sprite} alt={entry.name} width={56} height={56} loading="lazy" />
+              <div className="leaderboard-meta">
+                <h2>{entry.name}</h2>
               </div>
-              <div className='leaderboard-score'>Upvotes: {entry.up}</div>
+              <div className="leaderboard-score">Upvotes: {entry.up}</div>
             </article>
           ))}
         </div>

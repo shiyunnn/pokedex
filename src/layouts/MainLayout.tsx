@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
-const logoImage = "/logo.png";
+const logoImage = '/logo.png';
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/pokedex", label: "Pokedex" },
-  { to: "/leaderboard", label: "Leaderboard" },
+  { to: '/', label: 'Home' },
+  { to: '/pokedex', label: 'Pokedex' },
+  { to: '/leaderboard', label: 'Leaderboard' },
 ];
 
 function MainLayout() {
@@ -22,11 +22,7 @@ function MainLayout() {
     links.map((link) => (
       <NavLink
         key={link.to}
-        className={({ isActive }) =>
-          isActive
-            ? "nes-btn is-warning is-active nav-btn"
-            : "nes-btn is-primary nav-btn"
-        }
+        className={({ isActive }) => (isActive ? 'nes-btn is-warning is-active nav-btn' : 'nes-btn is-primary nav-btn')}
         to={link.to}
         onClick={() => setIsNavOpen(false)}
       >
@@ -64,20 +60,16 @@ function MainLayout() {
       </section>
 
       <button
-        className={`nav-backdrop${isNavOpen ? " is-open" : ""}`}
+        className={`nav-backdrop${isNavOpen ? ' is-open' : ''}`}
         type="button"
         aria-label="Close navigation menu"
         onClick={() => setIsNavOpen(false)}
       />
 
-      <aside className={`mobile-nav-drawer${isNavOpen ? " is-open" : ""}`}>
+      <aside className={`mobile-nav-drawer${isNavOpen ? ' is-open' : ''}`}>
         <section className="mobile-sidebar-nav nes-container is-dark is-rounded with-title">
           <p className="title">Navigation</p>
-          <nav
-            className="nav-list"
-            aria-label="Main navigation"
-            id="mobile-navigation"
-          >
+          <nav className="nav-list" aria-label="Main navigation" id="mobile-navigation">
             {renderNavLinks()}
           </nav>
         </section>
