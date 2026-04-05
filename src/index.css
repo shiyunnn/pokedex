@@ -1,0 +1,57 @@
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('https://fonts.gstatic.com/s/pressstart2p/v16/e3t4euO8T-267oIAQAu6jDQyK3nYivNm4I81PZQ.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --retro-bg: #d8cfad;
+  --retro-bg-dark: #b9ab7a;
+  --retro-panel: #e8ddb6;
+  --retro-panel-soft: #f3ecd0;
+  --retro-ink: #2f3a2d;
+  --retro-ink-soft: #55624f;
+  --retro-frame: #323b2f;
+  --retro-frame-border-image: url("data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8' ?><svg version='1.1' width='5' height='5' xmlns='http://www.w3.org/2000/svg'><path d='M2 1 h1 v1 h-1 z M1 2 h1 v1 h-1 z M3 2 h1 v1 h-1 z M2 3 h1 v1 h-1 z' fill='rgb(50,59,47)' /></svg>");
+  --retro-frame-shadow: #8d845f;
+  --retro-accent: #b1552c;
+  --retro-accent-border-image: url("data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8' ?><svg version='1.1' width='5' height='5' xmlns='http://www.w3.org/2000/svg'><path d='M2 1 h1 v1 h-1 z M1 2 h1 v1 h-1 z M3 2 h1 v1 h-1 z M2 3 h1 v1 h-1 z' fill='rgb(177,85,44)' /></svg>");
+  --retro-accent-soft: #d6a35a;
+  --retro-nav: #6f8753;
+  --retro-nav-active: #d2b24f;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  padding: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 216, 0.4), rgba(151, 138, 95, 0.1)),
+    linear-gradient(135deg, #d7cd9a, #c9bc86 55%, #baa86d);
+  color: var(--retro-ink);
+  font-family: 'Press Start 2P', monospace;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+#root {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0.65rem;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "useTabs": false,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "importOrderParserPlugins": ["typescript", "jsx"],
+  "importOrder": [
+    "^react$",
+    "^(?:(?!(components|hooks|utils|images|pages|types|enums|features|./|../)))",
+    "^(components|hooks|utils|images|pages|types|enums|features)",
+    "^[../]",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
+}
